@@ -27,21 +27,12 @@ resource "aws_subnet" "public" {
     "Name" = "${var.project}-${var.env}-public1"
   }
 }
-resource "aws_subnet" "zomato-prod-public2" {
-  vpc_id                  = aws_vpc.zomato-prod-vpc.id
-  cidr_block              = var.zomato-prod-public2-config.cidr
-  availability_zone       = var.zomato-prod-public2-config.az
-  map_public_ip_on_launch = true
 
-  tags = {
-    "Name" = "${var.project}-${var.env}-public2"
-  }
-}
 
-resource "aws_subnet" "zomato-prod-private1" {
+resource "aws_subnet" "private" {
   vpc_id                  = aws_vpc.zomato-prod-vpc.id
-  cidr_block              = var.zomato-prod-private1-config.cidr
-  availability_zone       = var.zomato-prod-private1-config.az
+  cidr_block              = var.subnet-private-config.cidr
+  availability_zone       = var.subnet-private-config.az
   map_public_ip_on_launch = false
 
   tags = {
@@ -59,7 +50,7 @@ resource "aws_eip" "zomato-prod-eip-nat" {
 
 resource "aws_nat_gateway" "zomato-prod-natgw" {
   allocation_id = aws_eip.zomato-prod-eip-nat.id
-  subnet_id     = aws_subnet.zomato-prod-public2.id
+  subnet_id     = aws_subnet.public.id
 
   tags = {
     Name = "${var.project}-${var.env}-nat_gw"
@@ -99,16 +90,16 @@ resource "aws_route_table" "zomato-prod-rt-private" {
 }
 
 resource "aws_route_table_association" "zomato-prod-rt_subnet-assoc1" {
-  subnet_id      = aws_subnet.zomato-prod-public1.id
+  subnet_id      = aws_subnet.public.id
   route_table_id = aws_route_table.zomato-prod-rt-public.id
 }
 
 resource "aws_route_table_association" "zomato-prod-rt_subnet-assoc2" {
-  subnet_id      = aws_subnet.zomato-prod-public2.id
+  subnet_id      = aws_subnet.public.id
   route_table_id = aws_route_table.zomato-prod-rt-public.id
 }
 
 resource "aws_route_table_association" "zomato-prod-rt_subnet-assoc3" {
-  subnet_id      = aws_subnet.zomato-prod-private1.id
+  subnet_id      = aws_subnet.private.id
   route_table_id = aws_route_table.zomato-prod-rt-private.id
 }

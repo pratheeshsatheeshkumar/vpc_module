@@ -11,6 +11,7 @@ variable "subnet-public-config" {
     cidr = "null"
     az   = "null"
   }
+}
 variable "subnet-private-config" {
   type = map(any)
   default = {
