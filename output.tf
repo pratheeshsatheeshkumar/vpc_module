@@ -3,7 +3,7 @@ value = aws_vpc.zomato-prod-vpc.id
 }
 
 output "public" {
-    value = aws_submultinet.public.id
+    value = aws_subnet.public.id
 }
 
 output "private" {
